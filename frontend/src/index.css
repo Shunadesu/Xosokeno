@@ -1,0 +1,187 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Mobile background - Global background for all pages */
+  @media (max-width: 1023px) {
+    html, body {
+      background-image: url('/backgroundxoso.png') !important;
+      background-size: cover !important;
+      background-position: center !important;
+      background-repeat: no-repeat !important;
+      background-attachment: fixed !important;
+      min-height: 100vh !important;
+    }
+    
+    /* Override ALL gradient backgrounds on mobile */
+    .bg-gradient-to-br,
+    .bg-gradient-to-r,
+    .min-h-screen.bg-gradient-to-br,
+    .min-h-screen.bg-gradient-to-br.from-primary-600,
+    .min-h-screen.bg-gradient-to-br.from-gray-50 {
+      background: transparent !important;
+    }
+    
+    /* Make main content areas semi-transparent */
+    .min-h-screen {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(2px);
+    }
+    
+    /* Improve text readability on mobile with background */
+    .text-gray-900 {
+      color: #1f2937 !important;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+    }
+    
+    .text-gray-800 {
+      color: #1f2937 !important;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+    }
+    
+    .text-gray-600 {
+      color: #374151 !important;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+    
+    /* Improve card visibility on mobile with background */
+    .card,
+    .bg-white {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Ensure buttons remain visible */
+    .btn-primary {
+      background: linear-gradient(to right, #2563eb, #1d4ed8) !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Make header semi-transparent and ensure sticky works */
+    .bg-primary-600,
+    .bg-primary-600\/95 {
+      background: rgba(37, 99, 235, 0.95) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Keep only essential overrides for mobile background */
+    
+    /* Force background on all containers */
+    #root,
+    .min-h-screen.bg-gradient-to-br.from-primary-600,
+    .min-h-screen.bg-gradient-to-br.from-gray-50 {
+      background: transparent !important;
+    }
+    
+    /* Ensure background shows through on all pages */
+    * {
+      background-attachment: inherit;
+    }
+    
+    /* Additional overrides for specific components */
+    .bg-white\/95,
+    .bg-white\/20 {
+      background: rgba(255, 255, 255, 0.85) !important;
+      backdrop-filter: blur(8px);
+    }
+    
+    /* Make sure the background is visible everywhere */
+    body > div,
+    #root > div {
+      background: transparent !important;
+    }
+    
+    /* Ensure proper spacing for fixed header and footer */
+    .pt-20 {
+      padding-top: 5rem !important; /* Space for fixed header */
+    }
+    
+    .pb-20 {
+      padding-bottom: 5rem !important; /* Space for fixed footer */
+    }
+    
+    /* Ensure content doesn't get hidden behind fixed elements */
+    .min-h-screen {
+      min-height: 100vh !important;
+    }
+    
+    /* Smooth scrolling for better UX */
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    /* Keep only background-related overrides */
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-white;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 px-4 py-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 px-4 py-2 shadow-sm hover:shadow-md;
+  }
+  
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  
+  .btn-lg {
+    @apply px-6 py-3 text-base;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200;
+  }
+  
+  .input {
+    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 2s infinite;
+  }
+  
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
