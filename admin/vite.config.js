@@ -7,34 +7,40 @@ export default defineConfig({
   server: {
     port: 3001,
     proxy: {
-      // Proxy tất cả requests từ /api/* đến backend
+      // Backend API proxy - handle all /api calls
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api'),
-        configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
-            console.log('proxy error', err);
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('API proxy error', err);
           });
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request to API:', req.method, req.url);
           });
-          proxy.on('proxyRes', (proxyRes, req, res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from API:', proxyRes.statusCode, req.url);
           });
         },
       },
-      // Proxy socket.io connections
-      '/socket.io': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        ws: true,
-      },
     },
   },
+  // Ẩn source maps trong production để bảo mật
   build: {
+    sourcemap: false,
     outDir: 'dist',
-    sourcemap: true,
+    rollupOptions: {
+      output: {
+        // Ẩn tên file để khó debug hơn
+        entryFileNames: 'assets/[hash].js',
+        chunkFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash].[ext]'
+      }
+    }
   },
+  // Ẩn các thông tin debug trong console
+  define: {
+    __DEV__: JSON.stringify(process.env.NODE_ENV === 'development')
+  }
 })
