@@ -1,7 +1,22 @@
 // Environment configuration for Frontend
 export const config = {
   // API Configuration
-  apiUrl: import.meta.env.VITE_API_URL || '/api',
+  // Always use relative URL for production (Vercel will proxy /api to backend)
+  // Only use absolute URL if explicitly set and not in production
+  apiUrl: (() => {
+    const envApiUrl = import.meta.env.VITE_API_URL;
+    // If VITE_API_URL is set and contains 'http' (absolute URL), check if we should use it
+    if (envApiUrl && envApiUrl.startsWith('http')) {
+      // Only use absolute URL in development
+      if (import.meta.env.DEV) {
+        return envApiUrl;
+      }
+      // In production, always use relative URL for proxy
+      return '/api';
+    }
+    // Default to relative URL for proxy
+    return envApiUrl || '/api';
+  })(),
   socketUrl: import.meta.env.VITE_SOCKET_URL || window.location.origin,
   
   // App Configuration
