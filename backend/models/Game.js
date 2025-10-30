@@ -110,8 +110,31 @@ const gameSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  toJSON: { 
+    virtuals: true,
+    transform: function(doc, ret) {
+      // Convert Map to plain object for JSON serialization
+      if (ret.payoutRates instanceof Map) {
+        ret.payoutRates = Object.fromEntries(ret.payoutRates);
+      } else if (ret.payoutRates && typeof ret.payoutRates === 'object') {
+        // Already an object, ensure it's a plain object
+        ret.payoutRates = { ...ret.payoutRates };
+      }
+      return ret;
+    }
+  },
+  toObject: { 
+    virtuals: true,
+    transform: function(doc, ret) {
+      // Convert Map to plain object
+      if (ret.payoutRates instanceof Map) {
+        ret.payoutRates = Object.fromEntries(ret.payoutRates);
+      } else if (ret.payoutRates && typeof ret.payoutRates === 'object') {
+        ret.payoutRates = { ...ret.payoutRates };
+      }
+      return ret;
+    }
+  }
 });
 
 // Virtual for game duration

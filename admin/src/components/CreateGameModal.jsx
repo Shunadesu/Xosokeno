@@ -86,7 +86,7 @@ const CreateGameModal = ({ isOpen, onClose, onGameCreated }) => {
         status: 'pending'
       };
 
-      const response = await axios.post('/api/games', gameData);
+      const response = await axios.post('/games', gameData);
       
       toast.success(`Tạo game ${gameType.toUpperCase()} thành công!`);
       onGameCreated(response.data.data);

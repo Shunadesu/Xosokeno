@@ -6,9 +6,8 @@ export default function CustomerService() {
       
       <div className="px-4 py-6">
         <div className="text-center mb-8">
-          <MessageCircle className="h-16 w-16 text-primary-600 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Chăm sóc khách hàng</h1>
-          <p className="text-gray-600">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
+          <h1 className="text-2xl font-bold text-white mb-2">Chăm sóc khách hàng</h1>
+          <p className="text-white">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
         </div>
 
         <div className="space-y-6">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, Plus, Minus, CreditCard } from 'lucide-react'
 import { useBetsStore, useWalletStore, usePromotionsStore, useAuthStore } from '../stores/index'
+import toast from 'react-hot-toast'
 
 export default function BetSlip({ game, onPlaceBet }) {
   const [amount, setAmount] = useState(10000)
@@ -32,11 +33,22 @@ export default function BetSlip({ game, onPlaceBet }) {
     setAmount(value)
   }
 
+  const getPayoutRate = (key) => {
+    if (!game.payoutRates) return 0;
+    // Handle both Map and object formats
+    if (game.payoutRates instanceof Map) {
+      return game.payoutRates.get(key) || 0;
+    } else if (typeof game.payoutRates === 'object') {
+      return game.payoutRates[key] || 0;
+    }
+    return 0;
+  }
+
   const calculatePayout = () => {
     // For Keno game, calculate based on number of selected numbers
     if (betSlip.betType === 'keno') {
       if (betSlip.numbers.length === 0) return 0
-      const payoutRate = game.payoutRates?.[betSlip.numbers.length.toString()] || 0
+      const payoutRate = getPayoutRate(betSlip.numbers.length.toString())
       return amount * payoutRate
     }
     
@@ -51,7 +63,7 @@ export default function BetSlip({ game, onPlaceBet }) {
   const handlePlaceBet = async () => {
     // Validation for Keno game (needs numbers)
     if (betSlip.betType === 'keno' && betSlip.numbers.length === 0) {
-      alert('Vui lòng chọn ít nhất 1 số')
+      toast.error('Vui lòng chọn ít nhất 1 số')
       return
     }
 
@@ -62,12 +74,14 @@ export default function BetSlip({ game, onPlaceBet }) {
     }
 
     if (amount < game.minBetAmount || amount > game.maxBetAmount) {
-      alert(`Số tiền cược phải từ ${game.minBetAmount.toLocaleString()} đến ${game.maxBetAmount.toLocaleString()} VNĐ`)
+      toast.error(`Số tiền cược phải từ ${game.minBetAmount.toLocaleString()} đến ${game.maxBetAmount.toLocaleString()} VNĐ`)
       return
     }
 
     if (amount > currentBalance) {
-      alert('Số dư không đủ')
+      toast.error('Số dư không đủ! Vui lòng nạp thêm tiền để tiếp tục đặt cược.', {
+        duration: 4000,
+      })
       return
     }
 
@@ -207,7 +221,7 @@ export default function BetSlip({ game, onPlaceBet }) {
               <span className="text-sm text-gray-600">Tỷ lệ trả thưởng:</span>
               <span className="font-medium text-gray-900">
                 {betSlip.betType === 'keno' 
-                  ? (game.payoutRates?.[betSlip.numbers.length.toString()] || 0)
+                  ? getPayoutRate(betSlip.numbers.length.toString())
                   : 1.95}x
               </span>
             </div>
@@ -230,10 +244,8 @@ export default function BetSlip({ game, onPlaceBet }) {
         <button
           onClick={handlePlaceBet}
           disabled={
-            (betSlip.betType === 'keno' && betSlip.numbers.length === 0) ||
             amount < game.minBetAmount || 
-            amount > game.maxBetAmount || 
-            amount > currentBalance
+            amount > game.maxBetAmount
           }
           className="w-full btn btn-primary btn-lg flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >

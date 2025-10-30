@@ -89,8 +89,12 @@ export default function Games() {
   }
 
   const handleGameCreated = (newGame) => {
-    // Game is already added to state by createGame in store
-    // No need to refresh
+    // Sau khi tạo game, tải lại danh sách để đồng bộ
+    fetchGames(1, {
+      search: '',
+      type: '',
+      status: ''
+    })
   }
 
   const handleGameUpdated = (updatedGame) => {

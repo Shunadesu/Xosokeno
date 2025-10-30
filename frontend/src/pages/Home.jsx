@@ -50,7 +50,7 @@ export default function Home() {
           description: latestGame.status === 'active' 
             ? `Game ${latestGame.title} - Đang hoạt động`
             : `Game ${latestGame.title} - Đã kết thúc${latestGame.result && latestGame.result.length > 0 ? ' (Có kết quả)' : ''}`,
-          background: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+          background: 'url(/kenotuchon.jpg) no-repeat center center',
           textColor: 'text-yellow-900',
           accentColor: 'text-blue-600',
           logo: 'Keno',
@@ -68,7 +68,7 @@ export default function Home() {
           description: latestGame.status === 'active' 
             ? `Game ${latestGame.title} - Đang hoạt động`
             : `Game ${latestGame.title} - Đã kết thúc${latestGame.result && latestGame.result.length > 0 ? ' (Có kết quả)' : ''}`,
-          background: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+          background: 'url(/lonnhochanle.jpg) no-repeat center center',
           textColor: 'text-yellow-900',
           accentColor: 'text-blue-600',
           logo: 'Keno',
@@ -86,7 +86,7 @@ export default function Home() {
           description: latestGame.status === 'active' 
             ? `Game ${latestGame.title} - Đang hoạt động`
             : `Game ${latestGame.title} - Đã kết thúc${latestGame.result && latestGame.result.length > 0 ? ' (Có kết quả)' : ''}`,
-          background: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+          background: 'url(/lonnhochanle.jpg) no-repeat center center',
           textColor: 'text-yellow-900',
           accentColor: 'text-blue-600',
           logo: 'Keno',
@@ -104,7 +104,7 @@ export default function Home() {
           description: latestGame.status === 'active' 
             ? `Game ${latestGame.title} - Đang hoạt động`
             : `Game ${latestGame.title} - Đã kết thúc${latestGame.result && latestGame.result.length > 0 ? ' (Có kết quả)' : ''}`,
-          background: 'bg-gradient-to-r from-yellow-400 to-yellow-500',
+          background: 'url(/giohoangdao.jpg) no-repeat center center',
           textColor: 'text-yellow-900',
           accentColor: 'text-red-600',
           logo: 'Vietlott',
@@ -139,22 +139,19 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <div className="px-4 py-6 space-y-6 max-w-7xl mx-auto">
+      <div className="px-2 sm:px-4 py-6 space-y-6 max-w-7xl mx-auto">
         {/* Welcome Section */}
         <div className="text-center py-4">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-primary-600 to-primary-700 rounded-full mb-4">
-            <span className="text-2xl">🎯</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl font-bold text-white mb-2">
             Chào mừng đến với XOSOKENOVN.COM
           </h1>
-          <p className="text-gray-600 max-w-md mx-auto">
+          <p className="text-white max-w-md mx-auto">
             Trải nghiệm game xổ số Keno hấp dẫn nhất Việt Nam với tỷ lệ trúng thưởng cao
           </p>
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
@@ -171,18 +168,18 @@ export default function Home() {
               </div>
             )
           })}
-        </div>
+        </div> */}
 
         {/* Game Banners */}
         <div className="space-y-4">
-          <div className="text-center">
-            <h2 className="text-xl font-bold text-gray-800 mb-2">
+          {/* <div className="text-center">
+            <h2 className="text-xl font-bold text-white mb-2">
               🎮 Game Hấp Dẫn
             </h2>
-            <p className="text-gray-600 text-sm">
+            <p className="text-white text-sm">
               Chọn game yêu thích và bắt đầu trải nghiệm
             </p>
-          </div>
+          </div> */}
           {banners.length > 0 ? (
             banners.map((banner) => (
               <GameBanner key={banner.id} banner={banner} />
@@ -229,8 +226,8 @@ export default function Home() {
 
         {/* Call to Action */}
         {!isAuthenticated && (
-          <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-6 text-center text-white relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-600/90 to-primary-700/90"></div>
+          <div className=" rounded-xl p-6 text-center text-white relative overflow-hidden">
+            
             <div className="relative z-10">
               <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-full mb-4">
                 <span className="text-2xl">🎁</span>
@@ -251,7 +248,7 @@ export default function Home() {
 
         {/* Footer Info */}
         <div className="text-center py-4">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-white">
             © 2024 XOSOKENOVN.COM - Trò chơi có thưởng dành cho người từ 18 tuổi trở lên
           </p>
         </div>

@@ -346,7 +346,15 @@ export default function KenoGame() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Bảng tỷ lệ trả thưởng</h3>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((count) => {
-                  const rate = currentGame.payoutRates?.[count.toString()] || 0
+                  // Handle both Map and object formats
+                  let rate = 0;
+                  if (currentGame.payoutRates) {
+                    if (currentGame.payoutRates instanceof Map) {
+                      rate = currentGame.payoutRates.get(count.toString()) || 0;
+                    } else if (typeof currentGame.payoutRates === 'object') {
+                      rate = currentGame.payoutRates[count.toString()] || 0;
+                    }
+                  }
                   return (
                     <div key={count} className="text-center p-3 bg-gray-50 rounded-lg">
                       <div className="text-sm text-gray-600">{count} số</div>

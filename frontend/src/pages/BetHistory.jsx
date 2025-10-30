@@ -68,9 +68,9 @@ export default function BetHistory() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       
-      <div className="px-4 py-6">
+      <div className="px-2 sm:px-4 py-6 bg-white rounded-2xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <button

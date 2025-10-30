@@ -54,13 +54,12 @@ export default function Wallet() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <div className="px-4 py-6 space-y-6 max-w-7xl mx-auto">
         {/* Balance Card */}
-        <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 text-white relative overflow-hidden shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-600/90 to-primary-700/90"></div>
+        <div className="bg-primary-600/95 rounded-2xl p-6 text-white relative overflow-hidden shadow-xl">
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-medium">Số dư tài khoản</h2>
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <CreditCard className="h-6 w-6" />
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center backdrop-blur-sm">
+                <CreditCard className="h-6 w-6 text-blue-500" />
               </div>
             </div>
             <div className="text-3xl font-bold">

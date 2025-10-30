@@ -101,6 +101,28 @@ export const getGameById = asyncHandler(async (req, res) => {
     await game.save();
   }
   
+  // Ensure payoutRates exists and has default values if empty or missing
+  const hasEmptyPayoutRates = !game.payoutRates || 
+    (game.payoutRates instanceof Map && game.payoutRates.size === 0) ||
+    (typeof game.payoutRates === 'object' && Object.keys(game.payoutRates).length === 0);
+  
+  if (hasEmptyPayoutRates) {
+    const defaultPayoutRates = new Map([
+      ['1', 1.0],
+      ['2', 2.0],
+      ['3', 5.0],
+      ['4', 10.0],
+      ['5', 20.0],
+      ['6', 50.0],
+      ['7', 100.0],
+      ['8', 200.0],
+      ['9', 500.0],
+      ['10', 1000.0]
+    ]);
+    game.payoutRates = defaultPayoutRates;
+    await game.save();
+  }
+  
   res.json({
     success: true,
     data: game

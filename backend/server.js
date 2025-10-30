@@ -76,15 +76,25 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static('uploads'));
 
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zuna-xosokeno', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB connected successfully'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
-
-// Start cron jobs
-startCronJobs();
+const mongoUri = process.env.MONGODB_URI;
+if (!mongoUri) {
+  console.error('❌ Missing MONGODB_URI in environment variables. Please set it in your .env file.');
+  // Do not start cron jobs when DB URI is missing
+} else {
+  mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log('✅ MongoDB connected successfully');
+    // Start cron jobs only after successful DB connection
+    startCronJobs();
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
+    // Do not start cron jobs on failed DB connection
+  });
+}
 
 // API Routes
 app.use('/api/auth', authRoutes);

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { useAuthStore } from './stores/index'
 import Layout from './components/Layout'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
           {/* Public routes - no authentication required */}
           <Route path="/" element={<Layout />}>
@@ -30,11 +32,11 @@ function App() {
             <Route path="customer-service" element={<CustomerService />} />
             <Route path="game/keno/:gameId" element={<KenoGame />} />
             <Route path="game/big-small/:gameId" element={<BigSmallGame />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
           </Route>
 
-          {/* Auth routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          
 
           {/* Protected routes - require authentication */}
           {isAuthenticated ? (

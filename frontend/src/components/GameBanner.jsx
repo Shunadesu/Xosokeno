@@ -1,4 +1,5 @@
 import { Play } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useGamesStore, useAuthStore } from '../stores/index'
 import axios from 'axios'
@@ -7,13 +8,12 @@ export default function GameBanner({ banner }) {
   const navigate = useNavigate()
   const { activeGames, fetchActiveGames } = useGamesStore()
   const { isAuthenticated } = useAuthStore()
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   const handleJoin = async () => {
     // Check if user is authenticated for betting
     if (!isAuthenticated) {
-      if (window.confirm('Bạn cần đăng nhập để tham gia chơi game. Đăng nhập ngay?')) {
-        navigate('/login', { state: { from: { pathname: '/' } } })
-      }
+      setShowLoginModal(true)
       return
     }
 
@@ -73,74 +73,101 @@ export default function GameBanner({ banner }) {
   }
 
   return (
-    <div className={`${banner.background} rounded-xl p-6 shadow-lg relative overflow-hidden mb-4 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1`}>
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-4 hover:shadow-xl transition-all duration-300">
+      {/* Top image */}
+      <div
+        className="w-full"
+        style={{
+          background: banner.background,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: 200
+        }}
+      />
 
-      {/* Content */}
-      <div className="relative z-10">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-
-            <h2 className={`text-3xl font-bold ${banner.textColor} mb-1`}>
+      {/* Bottom content */}
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 pr-3">
+            <h2 className={`text-lg font-bold ${banner.textColor || 'text-gray-900'} mb-1`}>
               {banner.title}
             </h2>
-            
-            <p className={`text-sm ${banner.textColor} opacity-90`}>
-              {banner.subtitle}
-            </p>
+            <p className="text-sm text-gray-600">{banner.subtitle}</p>
           </div>
-          
+
           <div className="text-right">
-            <div className={`text-sm font-bold ${banner.textColor} mb-2`}>
+            <div className={`text-xs font-semibold ${banner.textColor || 'text-gray-700'} mb-2`}>
               {banner.logo}
             </div>
             <button
               onClick={handleJoin}
-              className="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-primary-700 transition-colors flex items-center space-x-1 shadow-lg hover:shadow-xl"
+              className="bg-primary-600 text-white px-3 py-2 rounded-full text-sm font-medium hover:bg-primary-700 transition-colors inline-flex items-center space-x-1"
             >
               <Play className="h-4 w-4" />
               <span>Tham gia</span>
             </button>
           </div>
         </div>
-        
-        {/* Features */}
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-2">
-            {(banner.features || []).map((feature, index) => (
-              <div key={index} className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-lg">
-                {feature}
-              </div>
-            ))}
+
+        <div className="flex flex-col lg:flex-row items-start gap-2 lg:gap-0 lg:items-center justify-between">
+          <div className="flex flex-wrap gap-2">
+            {(banner.features || []).map((feature, index) => {
+              // Check if feature is a long text like "big-small", "even-odd"
+              const isLongText = feature.includes('-') || feature.length > 5;
+              
+              return (
+                <div
+                  key={index}
+                  className={`bg-blue-100 flex items-center justify-center text-gray-700 text-xs font-bold ${
+                    isLongText
+                      ? 'px-3 py-1 rounded-md'
+                      : 'w-8 h-8 rounded-full'
+                  }`}
+                >
+                  {feature}
+                </div>
+              );
+            })}
           </div>
-          
-          <div className={`text-xs ${banner.textColor} opacity-80 bg-white/20 px-2 py-1 rounded-full`}>
+
+          <div className="text-xs text-gray-600 bg-white/90 rounded-lg p-2">
             {banner.description}
           </div>
         </div>
-        
-        {/* Special graphics for specific banners */}
-        {banner.id === 'keno-big-small' && (
-          <div className="absolute top-2 left-2 flex items-center space-x-2 z-20">
-            <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs">🎯</span>
-            </div>
-            <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
-              HẤP DẪN HƠN
-            </div>
-          </div>
-        )}
-        
-        {banner.id === 'zodiac-hour' && (
-          <div className="absolute top-2 left-2 flex items-center space-x-2 z-20">
-            <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs">🐱</span>
-            </div>
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-gray-600 text-xs">🕐</span>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Login Required Modal (inside root) */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowLoginModal(false)}
+          />
+          <div className="relative z-10 w-[90%] max-w-sm bg-white rounded-xl shadow-2xl p-5 transform transition-all duration-200 ease-out">
+            <div className="text-center">
+              <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center">
+                <span className="text-primary-600">🔒</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Cần đăng nhập</h3>
+              <p className="text-sm text-gray-600 mb-4">Bạn cần đăng nhập để tham gia chơi game.</p>
+            </div>
+            <div className="flex items-center justify-end space-x-2">
+              <button
+                onClick={() => setShowLoginModal(false)}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100"
+              >
+                Để sau
+              </button>
+              <button
+                onClick={() => navigate('/login', { state: { from: { pathname: '/' } } })}
+                className="px-4 py-2 rounded-lg text-sm font-semibold bg-primary-600 text-white hover:bg-primary-700"
+              >
+                Đăng nhập
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
