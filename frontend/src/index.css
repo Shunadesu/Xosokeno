@@ -11,16 +11,18 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
-  /* Mobile background - Global background for all pages */
+  /* Global background - Apply to both mobile and desktop */
+  html, body {
+    background-image: url('/backgroundxoso.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+  }
+  
+  /* Mobile specific overrides */
   @media (max-width: 1023px) {
-    html, body {
-      background-image: url('/backgroundxoso.png') !important;
-      background-size: cover !important;
-      background-position: center !important;
-      background-repeat: no-repeat !important;
-      background-attachment: fixed !important;
-      min-height: 100vh !important;
-    }
     
     /* Override ALL gradient backgrounds on mobile */
     .bg-gradient-to-br,
@@ -126,6 +128,45 @@
     }
     
     /* Keep only background-related overrides */
+  }
+  
+  /* Desktop specific overrides */
+  @media (min-width: 1024px) {
+    /* Override gradient backgrounds on desktop to show background image */
+    .bg-gradient-to-br,
+    .bg-gradient-to-r,
+    .min-h-screen.bg-gradient-to-br,
+    .min-h-screen.bg-gradient-to-br.from-primary-600,
+    .min-h-screen.bg-gradient-to-br.from-gray-50,
+    .min-h-screen.bg-gradient-to-br.from-gray-50.via-blue-50.to-purple-50 {
+      background: transparent !important;
+    }
+    
+    /* Make main content areas semi-transparent on desktop */
+    .min-h-screen {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(2px);
+    }
+    
+    /* Improve text readability on desktop with background */
+    .text-white {
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Improve card visibility on desktop with background */
+    .bg-white {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Ensure background shows through */
+    #root,
+    #root > div,
+    body > div {
+      background: transparent !important;
+    }
   }
 }
 
