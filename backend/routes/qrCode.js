@@ -34,11 +34,11 @@ const qrCodeValidation = [
     .isLength({ min: 1, max: 100 })
     .withMessage('Account holder name must be between 1 and 100 characters'),
   body('minAmount')
-    .isInt({ min: 1000 })
-    .withMessage('Minimum amount must be at least 1000'),
+    .isInt({ min: 10000 })
+    .withMessage('Minimum amount must be at least 10000'),
   body('maxAmount')
-    .isInt({ min: 1000 })
-    .withMessage('Maximum amount must be at least 1000'),
+    .isInt({ min: 10000 })
+    .withMessage('Maximum amount must be at least 10000'),
   body('description')
     .optional()
     .trim()

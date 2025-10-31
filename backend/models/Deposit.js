@@ -16,7 +16,7 @@ const depositSchema = new mongoose.Schema({
   amount: {
     type: Number,
     required: [true, 'Deposit amount is required'],
-    min: [1000, 'Minimum deposit amount is 1000'],
+    min: [10000, 'Minimum deposit amount is 10000'],
     max: [10000000, 'Maximum deposit amount is 10000000']
   },
   method: {

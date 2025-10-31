@@ -3,7 +3,7 @@ import { X, QrCode, Upload, CheckCircle } from 'lucide-react'
 import { useDepositsStore } from '../stores/index'
 
 export default function DepositModal({ isOpen, onClose, qrCodes }) {
-  const [step, setStep] = useState(1) // 1: Select QR, 2: Show QR, 3: Upload receipt, 4: Confirmed
+  const [step, setStep] = useState(1) // 1: Select QR, 2: Show QR + Enter amount, 3: Confirm info, 4: Upload receipt, 5: Confirmed
   const [selectedQRCode, setSelectedQRCode] = useState(null)
   const [amount, setAmount] = useState('')
   const [note, setNote] = useState('')
@@ -29,10 +29,11 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
     setStep(2)
   }
 
-  const handleAmountChange = (value) => {
-    const numValue = parseInt(value.replace(/\D/g, ''))
-    if (!isNaN(numValue)) {
-      setAmount(numValue.toString())
+  const handleAmountChange = (e) => {
+    const value = e.target.value
+    // Chỉ cho phép số, cho phép xóa
+    if (value === '' || /^\d+$/.test(value)) {
+      setAmount(value)
     }
   }
 
@@ -58,7 +59,7 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
     const result = await createDeposit(formData)
     
     if (result.success) {
-      setStep(4)
+      setStep(5)
     }
   }
 
@@ -69,11 +70,20 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
     }).format(amount)
   }
 
+  // Đảm bảo minimum deposit là 10000
+  const getMinAmount = (qrCode) => {
+    return Math.max(qrCode?.minAmount || 10000, 10000)
+  }
+
+  const getMaxAmount = (qrCode) => {
+    return qrCode?.maxAmount || 10000000
+  }
+
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black h-full bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl max-w-md w-full overflow-hidden">
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -87,7 +97,7 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-96">
+        <div className="p-6 overflow-y-auto">
           {/* Step 1: Select QR Code */}
           {step === 1 && (
             <div className="space-y-4">
@@ -105,7 +115,7 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
                         <div className="font-medium text-gray-900">{qrCode.name}</div>
                         <div className="text-sm text-gray-500">{qrCode.bankName}</div>
                         <div className="text-sm text-gray-500">
-                          {formatCurrency(qrCode.minAmount)} - {formatCurrency(qrCode.maxAmount)}
+                          {formatCurrency(getMinAmount(qrCode))} - {formatCurrency(getMaxAmount(qrCode))}
                         </div>
                       </div>
                     </div>
@@ -139,35 +149,21 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
                 </div>
               )}
 
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Số tiền nạp
-                  </label>
-                  <input
-                    type="text"
-                    value={amount}
-                    onChange={(e) => handleAmountChange(e.target.value)}
-                    placeholder="Nhập số tiền"
-                    className="input w-full"
-                  />
-                  <div className="text-xs text-gray-500 mt-1">
-                    Tối thiểu: {formatCurrency(selectedQRCode.minAmount)} - 
-                    Tối đa: {formatCurrency(selectedQRCode.maxAmount)}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ghi chú (tùy chọn)
-                  </label>
-                  <input
-                    type="text"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Nhập ghi chú"
-                    className="input w-full"
-                  />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Số tiền nạp
+                </label>
+                <input
+                  type="text"
+                  value={amount}
+                  onChange={handleAmountChange}
+                  placeholder="Nhập số tiền"
+                  className="input w-full"
+                  inputMode="numeric"
+                />
+                <div className="text-xs text-gray-500 mt-1">
+                  Tối thiểu: {formatCurrency(getMinAmount(selectedQRCode))} - 
+                  Tối đa: {formatCurrency(getMaxAmount(selectedQRCode))}
                 </div>
               </div>
 
@@ -180,7 +176,7 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  disabled={!amount || parseInt(amount) < selectedQRCode.minAmount || parseInt(amount) > selectedQRCode.maxAmount}
+                  disabled={!amount || parseInt(amount) < getMinAmount(selectedQRCode) || parseInt(amount) > getMaxAmount(selectedQRCode)}
                   className="btn btn-primary flex-1"
                 >
                   Tiếp tục
@@ -189,8 +185,72 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
             </div>
           )}
 
-          {/* Step 3: Upload Receipt */}
-          {step === 3 && (
+          {/* Step 3: Confirm Transfer Info */}
+          {step === 3 && selectedQRCode && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <h4 className="font-medium text-gray-900 mb-4">Thông tin chuyển khoản</h4>
+                
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3 mb-4">
+                  <div className="text-sm">
+                    <span className="text-gray-500">Ngân hàng:</span>
+                    <span className="ml-2 font-medium text-gray-900">{selectedQRCode.bankName}</span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-gray-500">Số tài khoản:</span>
+                    <span className="ml-2 font-medium text-gray-900">{selectedQRCode.accountNumber}</span>
+                  </div>
+                  <div className="text-sm">
+                    <span className="text-gray-500">Chủ tài khoản:</span>
+                    <span className="ml-2 font-medium text-gray-900">{selectedQRCode.accountHolder}</span>
+                  </div>
+                  <div className="pt-2 border-t border-gray-200">
+                    <div className="text-sm text-gray-500">Số tiền nạp:</div>
+                    <div className="text-xl font-bold text-primary-600 mt-1">
+                      {formatCurrency(parseInt(amount))}
+                    </div>
+                  </div>
+                </div>
+
+                {selectedQRCode.qrImage?.url && (
+                  <div className="mb-4">
+                    <div className="bg-white p-4 rounded-lg border border-gray-200 inline-block">
+                      <img
+                        src={selectedQRCode.qrImage.url}
+                        alt="QR Code"
+                        className="w-48 h-48 mx-auto"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <p className="text-xs text-blue-800 text-center">
+                    Vui lòng chuyển khoản đúng số tiền {formatCurrency(parseInt(amount))} đến tài khoản trên. 
+                    Sau khi chuyển khoản, nhấn "Đã nạp" để upload ảnh xác nhận.
+                  </p>
+                </div> */}
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setStep(2)}
+                  className="btn btn-secondary flex-1"
+                >
+                  Quay lại
+                </button>
+                <button
+                  onClick={() => setStep(4)}
+                  className="btn btn-primary flex-1"
+                >
+                  Đã nạp
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Upload Receipt */}
+          {step === 4 && (
             <div className="space-y-4">
               <div className="text-center">
                 <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-3" />
@@ -238,7 +298,7 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
 
               <div className="flex space-x-3">
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   className="btn btn-secondary flex-1"
                 >
                   Quay lại
@@ -254,8 +314,8 @@ export default function DepositModal({ isOpen, onClose, qrCodes }) {
             </div>
           )}
 
-          {/* Step 4: Confirmed */}
-          {step === 4 && (
+          {/* Step 5: Confirmed */}
+          {step === 5 && (
             <div className="text-center space-y-4">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
               <h4 className="text-lg font-semibold text-gray-900">Yêu cầu nạp tiền đã được gửi!</h4>

@@ -20,8 +20,8 @@ const router = express.Router();
 // Validation rules
 const depositValidation = [
   body('amount')
-    .isInt({ min: 1000, max: 10000000 })
-    .withMessage('Amount must be between 1000 and 10000000'),
+    .isInt({ min: 10000, max: 10000000 })
+    .withMessage('Amount must be between 10000 and 10000000'),
   body('method')
     .isIn(['qr_code', 'momo', 'zalopay', 'card', 'bank_transfer'])
     .withMessage('Invalid payment method'),

@@ -28,6 +28,15 @@ export default function Wallet() {
     }).format(amount)
   }
 
+  // Đảm bảo minimum deposit là 10000
+  const getMinAmount = (qrCode) => {
+    return Math.max(qrCode?.minAmount || 10000, 10000)
+  }
+
+  const getMaxAmount = (qrCode) => {
+    return qrCode?.maxAmount || 10000000
+  }
+
   const formatDate = (date) => {
     return new Date(date).toLocaleString('vi-VN')
   }
@@ -117,7 +126,7 @@ export default function Wallet() {
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-gray-900">
-                    {formatCurrency(qrCode.minAmount)} - {formatCurrency(qrCode.maxAmount)}
+                    {formatCurrency(getMinAmount(qrCode))} - {formatCurrency(getMaxAmount(qrCode))}
                   </div>
                   <div className={`text-xs px-2 py-1 rounded-full ${
                     qrCode.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'

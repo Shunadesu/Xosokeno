@@ -41,13 +41,13 @@ const qrCodeSchema = new mongoose.Schema({
   minAmount: {
     type: Number,
     required: [true, 'Minimum amount is required'],
-    min: [1000, 'Minimum amount must be at least 1000'],
-    default: 1000
+    min: [10000, 'Minimum amount must be at least 10000'],
+    default: 10000
   },
   maxAmount: {
     type: Number,
     required: [true, 'Maximum amount is required'],
-    min: [1000, 'Maximum amount must be at least 1000'],
+    min: [10000, 'Maximum amount must be at least 10000'],
     default: 10000000
   },
   isActive: {

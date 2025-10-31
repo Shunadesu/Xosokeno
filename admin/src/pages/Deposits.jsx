@@ -411,16 +411,6 @@ export default function Deposits() {
                 </div>
               </div>
 
-              {/* Ghi chú */}
-              {selectedDeposit.note && (
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Ghi chú</h3>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-gray-700">{selectedDeposit.note}</p>
-                  </div>
-                </div>
-              )}
-
               {/* Ảnh biên lai */}
               <div className="mt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Ảnh biên lai</h3>

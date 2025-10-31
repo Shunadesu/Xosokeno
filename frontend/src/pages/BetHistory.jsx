@@ -68,7 +68,7 @@ export default function BetHistory() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mx-4">
       
       <div className="px-2 sm:px-4 py-6 bg-white rounded-2xl">
         {/* Header */}
@@ -80,7 +80,7 @@ export default function BetHistory() {
             <ArrowLeft className="h-5 w-5" />
             <span>Quay lại</span>
           </button>
-          <h1 className="text-xl font-bold text-gray-900">Lịch sử cược</h1>
+          {/* <h1 className="text-xl font-bold text-gray-900">Lịch sử cược</h1> */}
           <div></div>
         </div>
 
