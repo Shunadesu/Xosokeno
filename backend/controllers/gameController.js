@@ -4,10 +4,10 @@ import Bet from '../models/Bet.js';
 import User from '../models/User.js';
 import { asyncHandler } from '../middleware/validation.js';
 
-// Get game templates (3 game cố định)
+// Get game templates (4 game cố định)
 export const getGameTemplates = asyncHandler(async (req, res) => {
   const templates = await Game.find({ 
-    type: { $in: ['keno', 'big-small', 'even-odd'] },
+    type: { $in: ['keno', 'big-small', 'even-odd', 'sum-three'] },
     isActive: true 
   }).sort({ type: 1 });
 
@@ -151,7 +151,7 @@ export const createGame = asyncHandler(async (req, res) => {
   }
 
   // Validate game type
-  const validTypes = ['keno', 'big-small', 'even-odd', 'special', 'anniversary'];
+  const validTypes = ['keno', 'big-small', 'even-odd', 'special', 'anniversary', 'sum-three'];
   if (!validTypes.includes(type)) {
     return res.status(400).json({
       success: false,
@@ -365,6 +365,12 @@ export const generateGameResult = asyncHandler(async (req, res) => {
       const randomIndex = Math.floor(Math.random() * numbers.length);
       result.push(numbers.splice(randomIndex, 1)[0]);
     }
+  } else if (game.type === 'sum-three') {
+    // Generate 3 random numbers (0-9) for Sum-Three
+    // Result will be displayed as sum of 3 numbers, range 0-27
+    for (let i = 0; i < 3; i++) {
+      result.push(Math.floor(Math.random() * 10)); // 0-9
+    }
   } else {
     // Generate random numbers for other types
     const numbers = Array.from({ length: 80 }, (_, i) => i + 1);
@@ -426,6 +432,42 @@ const processGameBets = async (game) => {
   }
 };
 
+// Helper function to calculate sum-three result classification
+const calculateSumThreeResult = (result) => {
+  // Result should be 3 numbers (0-9 each)
+  if (!result || result.length !== 3) {
+    return null;
+  }
+  
+  const sum = result[0] + result[1] + result[2]; // Sum range: 0-27
+  
+  // Xỉu: 0-13, Tài: 14-27
+  const isTai = sum >= 14;
+  const isXiu = sum <= 13;
+  
+  // Chẵn: sum % 2 === 0, Lẻ: sum % 2 === 1
+  const isChan = sum % 2 === 0;
+  const isLe = sum % 2 === 1;
+  
+  // Combinations
+  const isTaiChan = isTai && isChan; // 14,16,18,20,22,24,26
+  const isTaiLe = isTai && isLe;     // 15,17,19,21,23,25,27
+  const isXiuChan = isXiu && isChan;  // 0,2,4,6,8,10,12
+  const isXiuLe = isXiu && isLe;      // 1,3,5,7,9,11,13
+  
+  return {
+    sum,
+    isTai,
+    isXiu,
+    isChan,
+    isLe,
+    isTaiChan,
+    isTaiLe,
+    isXiuChan,
+    isXiuLe
+  };
+};
+
 // Process individual bet
 const processBet = async (bet, game) => {
   try {
@@ -475,6 +517,49 @@ const processBet = async (bet, game) => {
       payoutRate = matchedCount > 0 ? 1.95 : 0; // 1.95x payout
       winAmount = matchedCount > 0 ? bet.amount * payoutRate : 0;
       status = matchedCount > 0 ? 'won' : 'lost';
+      
+    } else if (game.type === 'sum-three') {
+      // Sum-Three game: Calculate result from 3 numbers
+      const resultClass = calculateSumThreeResult(game.result);
+      
+      if (!resultClass) {
+        console.error(`❌ Invalid result for sum-three game: ${game.result}`);
+        status = 'lost';
+      } else {
+        // Check bet type and calculate winnings
+        let isWin = false;
+        
+        if (bet.betType === 'tai') {
+          isWin = resultClass.isTai;
+          payoutRate = isWin ? 2.0 : 0; // 1x2 = 2.0
+        } else if (bet.betType === 'xiu') {
+          isWin = resultClass.isXiu;
+          payoutRate = isWin ? 2.0 : 0; // 1x2 = 2.0
+        } else if (bet.betType === 'chan') {
+          isWin = resultClass.isChan;
+          payoutRate = isWin ? 2.0 : 0; // 1x2 = 2.0
+        } else if (bet.betType === 'le') {
+          isWin = resultClass.isLe;
+          payoutRate = isWin ? 2.0 : 0; // 1x2 = 2.0
+        } else if (bet.betType === 'taiChan') {
+          isWin = resultClass.isTaiChan;
+          payoutRate = isWin ? 4.0 : 0; // 1x4 = 4.0
+        } else if (bet.betType === 'taiLe') {
+          isWin = resultClass.isTaiLe;
+          payoutRate = isWin ? 4.0 : 0; // 1x4 = 4.0
+        } else if (bet.betType === 'xiuChan') {
+          isWin = resultClass.isXiuChan;
+          payoutRate = isWin ? 4.0 : 0; // 1x4 = 4.0
+        } else if (bet.betType === 'xiuLe') {
+          isWin = resultClass.isXiuLe;
+          payoutRate = isWin ? 4.0 : 0; // 1x4 = 4.0
+        }
+        
+        matchedCount = isWin ? 1 : 0;
+        winAmount = isWin ? bet.amount * payoutRate : 0;
+        status = isWin ? 'won' : 'lost';
+        matchedNumbers = game.result; // Store the 3 numbers for reference
+      }
     }
 
     // Update bet with results

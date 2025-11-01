@@ -95,6 +95,12 @@ export const placeBet = asyncHandler(async (req, res) => {
     }
   }
   
+  // Validate sum-three bet types (numbers array can be empty)
+  if (['tai', 'xiu', 'chan', 'le', 'taiChan', 'taiLe', 'xiuChan', 'xiuLe'].includes(betType)) {
+    // For sum-three games, numbers array should be empty or can be ignored
+    // Bet type is sufficient for these games
+  }
+  
   // Create bet
   const bet = await Bet.create({
     userId: req.user._id,

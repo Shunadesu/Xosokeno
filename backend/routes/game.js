@@ -21,7 +21,7 @@ const router = express.Router();
 // Validation rules for creating games
 const createGameValidation = [
   body('type')
-    .isIn(['keno', 'big-small', 'even-odd', 'special', 'anniversary'])
+    .isIn(['keno', 'big-small', 'even-odd', 'special', 'anniversary', 'sum-three'])
     .withMessage('Invalid game type'),
   body('title')
     .trim()

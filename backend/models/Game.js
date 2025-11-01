@@ -4,7 +4,7 @@ const gameSchema = new mongoose.Schema({
   type: {
     type: String,
     required: [true, 'Game type is required'],
-    enum: ['keno', 'big-small', 'even-odd', 'special', 'anniversary']
+    enum: ['keno', 'big-small', 'even-odd', 'special', 'anniversary', 'sum-three']
   },
   title: {
     type: String,

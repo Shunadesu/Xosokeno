@@ -202,6 +202,7 @@ export default function Games() {
               <option value="keno">Keno tự chọn</option>
               <option value="big-small">Big/Small</option>
               <option value="even-odd">Even/Odd</option>
+              <option value="sum-three">Tổng 3 Số</option>
               <option value="special">Giờ hoàng đạo</option>
               <option value="anniversary">Kỷ niệm</option>
             </select>

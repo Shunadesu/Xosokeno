@@ -72,6 +72,18 @@ const CreateGameModal = ({ isOpen, onClose, onGameCreated }) => {
           ['even', 1.95],
           ['odd', 1.95]
         ]);
+      } else if (selectedTemplate === 'sum-three') {
+        // Sum-Three payout rates
+        payoutRates = new Map([
+          ['tai', 2.0],      // 1x2
+          ['xiu', 2.0],     // 1x2
+          ['chan', 2.0],    // 1x2
+          ['le', 2.0],      // 1x2
+          ['taiChan', 4.0], // 1x4
+          ['taiLe', 4.0],   // 1x4
+          ['xiuChan', 4.0], // 1x4
+          ['xiuLe', 4.0]    // 1x4
+        ]);
       }
 
       const gameData = {
@@ -139,6 +151,7 @@ const CreateGameModal = ({ isOpen, onClose, onGameCreated }) => {
               <p>• <strong>KENO:</strong> User chọn 1-20 số, trả thưởng theo số trúng (1x-20x)</p>
               <p>• <strong>LỚN/NHỎ:</strong> Dự đoán tổng 20 số ≥810 (Lớn) hoặc ≤810 (Nhỏ), trả 1.95x</p>
               <p>• <strong>CHẴN/LẺ:</strong> Dự đoán tổng 20 số chẵn hoặc lẻ, trả 1.95x</p>
+              <p>• <strong>TỔNG 3 SỐ:</strong> Kết quả là tổng 3 số (00-27). Tài/Xỉu/Chẵn/Lẻ trả 2x, Tài chẵn/Tài lẻ/Xỉu chẵn/Xỉu lẻ trả 4x</p>
               <p>• <strong>Thời gian:</strong> Khuyến nghị 5-10 phút cho mỗi game</p>
             </div>
           </div>
@@ -147,11 +160,12 @@ const CreateGameModal = ({ isOpen, onClose, onGameCreated }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Loại Game *
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
                 { type: 'keno', title: 'KENO XỔ SỐ TỰ CHỌN', desc: 'Chọn 1-20 số từ 1-80', icon: '🎯' },
                 { type: 'big-small', title: 'LỚN/NHỎ', desc: 'Dự đoán tổng 20 số', icon: '📊' },
-                { type: 'even-odd', title: 'CHẴN/LẺ', desc: 'Dự đoán tổng chẵn/lẻ', icon: '⚖️' }
+                { type: 'even-odd', title: 'CHẴN/LẺ', desc: 'Dự đoán tổng chẵn/lẻ', icon: '⚖️' },
+                { type: 'sum-three', title: 'TỔNG 3 SỐ', desc: 'Tài/Xỉu, Chẵn/Lẻ (00-27)', icon: '🎲' }
               ].map((gameType) => (
                 <button
                   key={gameType.type}
@@ -160,8 +174,8 @@ const CreateGameModal = ({ isOpen, onClose, onGameCreated }) => {
                     setSelectedTemplate(gameType.type);
                     setFormData(prev => ({
                       ...prev,
-                      title: gameType.title,
-                      description: gameType.desc,
+                      title: gameType.type === 'sum-three' ? 'TỔNG 3 SỐ' : gameType.title,
+                      description: gameType.type === 'sum-three' ? 'Kết quả là tổng 3 số (00-27). Đặt cược: Tài/Xỉu, Chẵn/Lẻ, Tài chẵn/Tài lẻ/Xỉu chẵn/Xỉu lẻ' : gameType.desc,
                       minBetAmount: '10000',
                       maxBetAmount: '1000000'
                     }));

@@ -95,6 +95,24 @@ export default function Home() {
           gameId: latestGame._id,
           gameType: 'even-odd'
         })
+      } else if (type === 'sum-three') {
+        banners.push({
+          id: `sum-three-${latestGame._id}`,
+          type: 'sum-three',
+          title: 'TỔNG 3 SỐ',
+          subtitle: 'Tài/Xỉu, Chẵn/Lẻ',
+          description: latestGame.status === 'active' 
+            ? `Game ${latestGame.title} - Đang hoạt động`
+            : `Game ${latestGame.title} - Đã kết thúc${latestGame.result && latestGame.result.length > 0 ? ' (Có kết quả)' : ''}`,
+          background: 'url(/lonnhochanle.jpg) no-repeat center center',
+          textColor: 'text-yellow-900',
+          accentColor: 'text-blue-600',
+          logo: 'Keno',
+          features: ['tai-xiu', 'chan-le'],
+          graphics: ['mascots', 'keno-ball'],
+          gameId: latestGame._id,
+          gameType: 'sum-three'
+        })
       } else if (type === 'special') {
         banners.push({
           id: `special-${latestGame._id}`,

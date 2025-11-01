@@ -23,7 +23,9 @@ export default function GameBanner({ banner }) {
     // Use gameId from banner if available (from database)
     if (banner.gameId) {
       // Navigate directly to the specific game
-      if (banner.gameType === 'big-small' || banner.gameType === 'even-odd') {
+      if (banner.gameType === 'sum-three') {
+        navigate(`/game/sum-three/${banner.gameId}`)
+      } else if (banner.gameType === 'big-small' || banner.gameType === 'even-odd') {
         navigate(`/game/big-small/${banner.gameId}`)
       } else {
         navigate(`/game/keno/${banner.gameId}`)

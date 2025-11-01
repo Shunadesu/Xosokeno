@@ -16,8 +16,8 @@ const betSchema = new mongoose.Schema({
     required: [true, 'Numbers are required'],
     validate: {
       validator: function(numbers) {
-        // For Big/Small/Even/Odd games, numbers array can be empty
-        if (['big', 'small', 'even', 'odd'].includes(this.betType)) {
+        // For Big/Small/Even/Odd/Sum-Three games, numbers array can be empty
+        if (['big', 'small', 'even', 'odd', 'tai', 'xiu', 'chan', 'le', 'taiChan', 'taiLe', 'xiuChan', 'xiuLe'].includes(this.betType)) {
           return numbers.length >= 0 && numbers.length <= 20;
         }
         // For Keno game, numbers array must have 1-20 items
@@ -30,12 +30,12 @@ const betSchema = new mongoose.Schema({
   betType: {
     type: String,
     required: [true, 'Bet type is required'],
-    enum: ['keno', 'big', 'small', 'even', 'odd', 'special']
+    enum: ['keno', 'big', 'small', 'even', 'odd', 'special', 'tai', 'xiu', 'chan', 'le', 'taiChan', 'taiLe', 'xiuChan', 'xiuLe']
   },
   amount: {
     type: Number,
     required: [true, 'Bet amount is required'],
-    min: [1000, 'Minimum bet amount is 1000'],
+    min: [10000, 'Minimum bet amount is 10000'],
     max: [1000000, 'Maximum bet amount is 1000000']
   },
   winAmount: {

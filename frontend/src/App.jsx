@@ -12,6 +12,7 @@ import CustomerService from './pages/CustomerService'
 import Profile from './pages/Profile'
 import KenoGame from './pages/KenoGame'
 import BigSmallGame from './pages/BigSmallGame'
+import SumThreeGame from './pages/SumThreeGame'
 import BetHistory from './pages/BetHistory'
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="customer-service" element={<CustomerService />} />
             <Route path="game/keno/:gameId" element={<KenoGame />} />
             <Route path="game/big-small/:gameId" element={<BigSmallGame />} />
+            <Route path="game/sum-three/:gameId" element={<SumThreeGame />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>

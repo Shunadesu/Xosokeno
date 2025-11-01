@@ -10,7 +10,7 @@ const gameTemplates = [
     title: 'Keno Tự chọn',
     description: 'Chọn số từ 1-80, hệ thống sẽ quay 20 số ngẫu nhiên',
     maxNumbers: 10,
-    minBetAmount: 1000,
+    minBetAmount: 10000,
     maxBetAmount: 1000000,
     payoutRates: new Map([
       ['1', 1.0],
@@ -34,7 +34,7 @@ const gameTemplates = [
     title: 'Big/Small',
     description: 'Đoán tổng 20 số > 810 (Big) hoặc < 810 (Small)',
     maxNumbers: 20,
-    minBetAmount: 1000,
+    minBetAmount: 10000,
     maxBetAmount: 1000000,
     payoutRates: new Map([
       ['big', 1.95],
@@ -50,11 +50,33 @@ const gameTemplates = [
     title: 'Even/Odd',
     description: 'Đoán tổng 20 số là chẵn (Even) hoặc lẻ (Odd)',
     maxNumbers: 20,
-    minBetAmount: 1000,
+    minBetAmount: 10000,
     maxBetAmount: 1000000,
     payoutRates: new Map([
       ['even', 1.95],
       ['odd', 1.95]
+    ]),
+    startTime: new Date(),
+    endTime: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 năm sau
+    isActive: true,
+    createdBy: new mongoose.Types.ObjectId()
+  },
+  {
+    type: 'sum-three',
+    title: 'Tổng 3 Số',
+    description: 'Kết quả là tổng 3 số (00-27). Đặt cược: Tài/Xỉu, Chẵn/Lẻ, Tài chẵn/Tài lẻ/Xỉu chẵn/Xỉu lẻ',
+    maxNumbers: 0,
+    minBetAmount: 10000,
+    maxBetAmount: 1000000,
+    payoutRates: new Map([
+      ['tai', 2.0],
+      ['xiu', 2.0],
+      ['chan', 2.0],
+      ['le', 2.0],
+      ['taiChan', 4.0],
+      ['taiLe', 4.0],
+      ['xiuChan', 4.0],
+      ['xiuLe', 4.0]
     ]),
     startTime: new Date(),
     endTime: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 năm sau
@@ -69,7 +91,7 @@ const seedGameTemplates = async () => {
     console.log('✅ MongoDB connected successfully');
 
     // Xóa các game template cũ
-    await Game.deleteMany({ type: { $in: ['keno', 'big-small', 'even-odd'] } });
+    await Game.deleteMany({ type: { $in: ['keno', 'big-small', 'even-odd', 'sum-three'] } });
     console.log('🗑️ Old game templates deleted');
 
     // Tạo game templates mới
